@@ -32,7 +32,7 @@ const AddNewProductPopup = (props) => {
       }
 
       const response = await fetch(
-        "http://localhost:3000/products/add-new-product",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/add-new-product",
         {
           method: "POST",
           body: formDataObject,

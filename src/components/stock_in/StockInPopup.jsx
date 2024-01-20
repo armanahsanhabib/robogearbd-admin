@@ -10,7 +10,7 @@ const StockInPopup = (props) => {
     const fetchSuggestions = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/products/all-product",
+          "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-product",
         );
         const data = await response.json();
 
@@ -70,7 +70,7 @@ const StockInPopup = (props) => {
       }
 
       const response = await fetch(
-        "http://localhost:3000/products/stock-in-product",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/stock-in-product",
         {
           method: "POST",
           body: JSON.stringify(props.formDataToSend),
@@ -127,7 +127,7 @@ const StockInPopup = (props) => {
                 </div>
                 {props.formData.product_image ? (
                   <img
-                    src={`http://localhost:3000/product_images/${props.formData.product_image}`}
+                    src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${props.formData.product_image}`}
                     alt="Product Image"
                     className="mx-auto h-[134px] w-full rounded-lg border bg-gray-50 object-cover"
                   />
@@ -183,7 +183,7 @@ const StockInPopup = (props) => {
                       >
                         <div className="left">
                           <img
-                            src={`http://localhost:3000/product_images/${product.product_image}`}
+                            src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${product.product_image}`}
                             alt={product.product_name}
                             className="h-[45px]"
                           />

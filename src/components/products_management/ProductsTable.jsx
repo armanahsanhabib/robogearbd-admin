@@ -43,7 +43,7 @@ const ProductsTable = (props) => {
             </td>
             <td className="border-b border-r p-2">
               <img
-                src={`http://localhost:3000/product_images/${item.product_image}`}
+                src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${item.product_image}`}
                 alt={item.product_image}
                 className="mx-auto"
                 style={{ width: "auto", height: "50px" }}

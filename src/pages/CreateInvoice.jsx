@@ -99,7 +99,7 @@ const CreateInvoice = () => {
     const fetchSuggestions = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/products/all-product",
+          "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-product",
         );
         const data = await response.json();
 
@@ -148,7 +148,7 @@ const CreateInvoice = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/products/save-invoice",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/save-invoice",
         {
           method: "POST",
           body: JSON.stringify(invoiceDataToSave),
