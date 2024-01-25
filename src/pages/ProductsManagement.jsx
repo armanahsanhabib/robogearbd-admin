@@ -24,7 +24,7 @@ const ProductsManagement = () => {
     try {
       const response = await fetch(
         // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-product",
-        "http://localhost:3000/products/all-product",
+        "https://robogearbd-admin.netlify.app/products/all-product",
       );
 
       if (!response.ok) {
