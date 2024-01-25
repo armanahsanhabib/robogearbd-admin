@@ -1,7 +1,5 @@
 /* eslint-disable react/prop-types */
 import { FaSave } from "react-icons/fa";
-import { ImPrinter } from "react-icons/im";
-import ReactToPrint from "react-to-print";
 
 const SavePdfForm = (props) => {
   return (
@@ -38,8 +36,8 @@ const SavePdfForm = (props) => {
           className="w-full rounded-md border px-2 py-1 focus:border-blue-500 focus:outline-none"
         />
       </div>
-      <div className="action_buttons col-span-5 flex items-center justify-between">
-        <ReactToPrint
+      <div className="action_buttons col-span-5 flex items-center justify-center">
+        {/* <ReactToPrint
           trigger={() => {
             return (
               <button className="flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-2 text-white hover:bg-indigo-600">
@@ -50,7 +48,7 @@ const SavePdfForm = (props) => {
           }}
           content={() => props.componentRef.current}
           documentTitle="Receipt"
-        />
+        /> */}
         <button
           className="flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-600"
           onClick={() => props.saveInvoice()}

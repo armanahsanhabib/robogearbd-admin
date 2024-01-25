@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
+
 const ProductsTable = (props) => {
   return (
-    <table className="w-full border-collapse border border-gray-300">
+    <table className="relative w-full border-collapse border border-gray-300">
       <thead>
         <tr className="bg-gray-300">
           <th className="w-[100px] border-b border-r p-2">ID</th>
@@ -71,7 +72,7 @@ const ProductsTable = (props) => {
               </button>
               <button
                 className="rounded bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700"
-                onClick={() => props.handleDeletePopupClick()}
+                onClick={() => props.handleDeletePopupClick(item._id)}
               >
                 Delete
               </button>

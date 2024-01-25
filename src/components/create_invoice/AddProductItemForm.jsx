@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { FaUndo } from "react-icons/fa";
-import { FaArrowRightLong } from "react-icons/fa6";
+import { FaArrowRightLong, FaEraser } from "react-icons/fa6";
 
 const AddProductItemForm = (props) => {
   return (
@@ -37,16 +37,35 @@ const AddProductItemForm = (props) => {
           className="w-full rounded-md border px-2 py-1 focus:border-blue-500 focus:outline-none"
         />
         {props.suggestions.length > 0 && (
-          <ul className="suggestion-list absolute left-0 top-[40px] max-h-[300px] w-full overflow-y-auto rounded border bg-gray-50 shadow">
+          <ul className="suggestion-list absolute left-0 top-[80px] z-50 max-h-[300px] w-full overflow-y-auto rounded border bg-gray-50 shadow">
             {props.suggestions.map((product) => (
               <li
-                className="cursor-pointer border-b px-3 py-2 hover:bg-gray-100"
+                className="flex cursor-pointer gap-3 border-b px-3 py-2 hover:bg-gray-100"
                 key={product._id}
                 onClick={() => props.handleSelectProduct(product)}
               >
-                {product.product_name}
+                <div className="left">
+                  <img
+                    src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${product.product_image}`}
+                    alt={product.product_name}
+                    className="h-[45px]"
+                  />
+                </div>
+                <div className="right">
+                  <h3 className="text-blue-600">{product.product_name}</h3>
+                  <p className="text-sm font-[300]">
+                    {`Price: ${product.selling_price}`}
+                  </p>
+                </div>
               </li>
             ))}
+            <button
+              className="absolute right-0 top-0 z-50 rounded bg-rose-600 px-5 py-2 text-white hover:bg-rose-800"
+              onClick={() => props.handleSuggestionCloseButton()}
+              type="button"
+            >
+              close
+            </button>
           </ul>
         )}
       </div>
@@ -99,6 +118,13 @@ const AddProductItemForm = (props) => {
           onClick={() => props.undoLastItem()}
         >
           <FaUndo /> <span>Undo Item</span>
+        </button>
+        <button
+          type="button"
+          className="mt-3 flex items-center gap-2 rounded-lg bg-amber-500 px-5 py-2 text-white hover:bg-amber-600"
+          onClick={() => props.handleProductItemClearButton()}
+        >
+          <FaEraser /> <span>Clear Data</span>
         </button>
         <button
           type="submit"

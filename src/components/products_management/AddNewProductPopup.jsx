@@ -1,5 +1,16 @@
 /* eslint-disable react/prop-types */
+import { useEffect } from "react";
+
 const AddNewProductPopup = (props) => {
+  useEffect(() => {
+    // Autofill product_id when component is mounted
+    const maxProductId = Math.max(
+      ...props.data.map((item) => item.product_id),
+      0,
+    );
+    props.setFormData({ ...props.formData, product_id: maxProductId + 1 });
+  }, []);
+
   // handle formdata change
   const handleChange = (e) => {
     props.setFormData({ ...props.formData, [e.target.name]: e.target.value });
@@ -98,7 +109,6 @@ const AddNewProductPopup = (props) => {
                     onChange={handleChange}
                     className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                     required
-                    autoFocus
                     placeholder="Enter code"
                   />
                 </div>
@@ -117,6 +127,7 @@ const AddNewProductPopup = (props) => {
                     onChange={handleChange}
                     className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                     required
+                    autoFocus
                     placeholder="Enter Product Name"
                   />
                 </div>
@@ -185,7 +196,7 @@ const AddNewProductPopup = (props) => {
                     name="description"
                     value={props.formData.description}
                     onChange={handleChange}
-                    className="h-[250px] w-full resize-none rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
+                    className="h-[350px] w-full resize-none rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                     placeholder="product description here..."
                   />
                 </div>
