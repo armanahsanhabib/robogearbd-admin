@@ -9,7 +9,7 @@ const AddNewProductPopup = (props) => {
       0,
     );
     props.setFormData({ ...props.formData, product_id: maxProductId + 1 });
-  }, []);
+  }, [props]);
 
   // handle formdata change
   const handleChange = (e) => {

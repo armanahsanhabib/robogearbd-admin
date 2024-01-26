@@ -61,10 +61,10 @@ const ProductsTable = (props) => {
               {item.stock_in}
             </td>
             <td className="border-b border-r p-2 text-center">
-              {/* {item.stock_out} */}
+              {item.stock_out}
             </td>
             <td className="border-b border-r p-2 text-center">
-              {/* {item.in_stock} */}
+              {item.current_stock}
             </td>
             <td className="border-b p-3 text-center">
               <button className="mr-3 rounded bg-amber-500 px-2 py-1 text-white transition-all hover:bg-amber-700">

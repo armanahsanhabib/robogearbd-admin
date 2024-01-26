@@ -3,15 +3,13 @@ import { IoCreate } from "react-icons/io5";
 import AllInvoicesTable from "../components/all_invoices/AllInvoicesTable";
 
 const AllInvoices = () => {
-  const [message, setMessage] = useState(null);
   const [data, setData] = useState([]);
 
   // get all stock in product list from database
   const fetchData = async () => {
     try {
       const response = await fetch(
-        // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-in-product",
-        "https://robogearbd-admin.netlify.app/products//all-invoice",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-invoice",
       );
 
       if (!response.ok) {
@@ -41,19 +39,6 @@ const AllInvoices = () => {
         </a>
       </div>
       <AllInvoicesTable data={data} />
-      {/* <button className="fixed bottom-0 right-0 m-8 flex h-[64px] w-[64px] items-center justify-center rounded-full bg-blue-600 text-4xl text-white shadow-lg">
-        <IoMdAdd
-          onClick={() => {
-            handleStockInPopup();
-          }}
-          className="transition-all hover:rotate-90"
-        />
-      </button> */}
-      {message && (
-        <div className="message fixed bottom-0 left-[50%] z-50 my-10 -translate-x-[50%] rounded-lg border bg-green-100 px-10 py-2 text-sm shadow-lg">
-          {message}
-        </div>
-      )}
     </div>
   );
 };

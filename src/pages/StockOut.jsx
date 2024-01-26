@@ -2,33 +2,13 @@ import { useEffect, useState } from "react";
 import StockOutTable from "../components/stock_out/StockOutTable";
 
 const StockOut = () => {
-  const [message, setMessage] = useState(null);
   const [data, setData] = useState([]);
-
-  const [formData, setFormData] = useState({
-    product_id: "",
-    product_name: "",
-    product_image: "",
-    buying_price: "",
-    selling_price: "",
-    qty: "",
-  });
-
-  const { product_id, buying_price, selling_price, qty } = formData;
-
-  const formDataToSend = {
-    product_id,
-    buying_price,
-    selling_price,
-    qty,
-  };
 
   // get all stock in product list from database
   const fetchData = async () => {
     try {
       const response = await fetch(
-        // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-in-product",
-        "https://robogearbd-admin.netlify.app/products/all-stock-out-products",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-in-product",
       );
 
       if (!response.ok) {
@@ -52,29 +32,8 @@ const StockOut = () => {
         <h3 className="text-3xl font-semibold text-rose-600">
           Stock Out Products
         </h3>
-        {/* <button
-          className="flex items-center gap-2 rounded bg-green-500 px-5 py-2 text-white hover:bg-green-600"
-          onClick={() => {
-            handleStockInPopup();
-          }}
-        >
-          <IoMdAdd className="text-xl" /> Stock in
-        </button> */}
       </div>
       <StockOutTable data={data} />
-      {/* <button className="fixed bottom-0 right-0 m-8 flex h-[64px] w-[64px] items-center justify-center rounded-full bg-blue-600 text-4xl text-white shadow-lg">
-        <IoMdAdd
-          onClick={() => {
-            handleStockInPopup();
-          }}
-          className="transition-all hover:rotate-90"
-        />
-      </button> */}
-      {message && (
-        <div className="message fixed bottom-0 left-[50%] z-50 my-10 -translate-x-[50%] rounded-lg border bg-green-100 px-10 py-2 text-sm shadow-lg">
-          {message}
-        </div>
-      )}
     </div>
   );
 };

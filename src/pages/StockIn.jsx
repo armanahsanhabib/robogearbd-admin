@@ -30,8 +30,7 @@ const StockIn = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-in-product",
-        "https://robogearbd-admin.netlify.app/products/all-stock-in-product",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-in-product",
       );
 
       if (!response.ok) {
