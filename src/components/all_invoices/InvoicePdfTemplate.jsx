@@ -3,12 +3,13 @@ import { FaFacebookSquare, FaGlobe } from "react-icons/fa";
 import LOGO from "../../assets/robogear logo.png";
 import LOGO_TEXT from "../../assets/robogear text logo.png";
 
-const GeneratedInvoice = (props) => {
+const InvoicePdfTemplate = (props) => {
   const date = new Date();
 
   return (
     <div
       id="invoice-pdf"
+      ref={props.targetRef}
       className="print_area right flex w-[210mm] flex-col gap-3 border px-[50px] py-[60px]"
     >
       {/* Invoice Header */}
@@ -191,4 +192,4 @@ const GeneratedInvoice = (props) => {
   );
 };
 
-export default GeneratedInvoice;
+export default InvoicePdfTemplate;

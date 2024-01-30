@@ -50,6 +50,7 @@ const SavePdfForm = (props) => {
           documentTitle="Receipt"
         /> */}
         <button
+          type="button"
           className="flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-2 text-white hover:bg-emerald-600"
           onClick={() => props.saveInvoice()}
         >

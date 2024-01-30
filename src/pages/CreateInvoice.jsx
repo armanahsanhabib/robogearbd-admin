@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaFileInvoice } from "react-icons/fa";
 import AddProductItemForm from "../components/create_invoice/AddProductItemForm";
 import CustomerDetailsForm from "../components/create_invoice/CustomerDetailsForm";
@@ -6,8 +6,6 @@ import GeneratedInvoice from "../components/create_invoice/GeneratedInvoice";
 import SavePdfForm from "../components/create_invoice/SavePdfForm";
 
 const CreateInvoice = () => {
-  const componentRef = useRef();
-
   // set invoice no
   const [invoiceNo, setInvoiceNo] = useState(0);
 
@@ -315,7 +313,6 @@ const CreateInvoice = () => {
           <SavePdfForm
             billCalculation={billCalculation}
             handleBillChange={handleBillChange}
-            componentRef={componentRef}
             saveInvoice={saveInvoice}
           />
         </div>
@@ -324,7 +321,6 @@ const CreateInvoice = () => {
           customerInfo={customerInfo}
           invoiceProducts={invoiceProducts}
           billCalculation={billCalculation}
-          componentRef={componentRef}
           receiptNo={invoiceNo}
         />
       </div>

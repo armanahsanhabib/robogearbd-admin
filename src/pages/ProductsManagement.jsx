@@ -23,7 +23,8 @@ const ProductsManagement = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-product",
+        // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-products",
+        "http://localhost:3000/products/all-products",
       );
 
       if (!response.ok) {
@@ -46,7 +47,8 @@ const ProductsManagement = () => {
     try {
       // Send a DELETE request to the server to delete the product
       const response = await fetch(
-        `https://robogear-bd-97bac4d16518.herokuapp.com/products/remove-product/${productId}`,
+        // `https://robogear-bd-97bac4d16518.herokuapp.com/products/remove-product/${productId}`,
+        `http://localhost:3000/products/remove-product/${productId}`,
         {
           method: "DELETE",
           headers: {

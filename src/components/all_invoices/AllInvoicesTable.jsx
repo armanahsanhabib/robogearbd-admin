@@ -1,5 +1,24 @@
 /* eslint-disable react/prop-types */
+import { jsPDF } from "jspdf";
+import InvoicePdfTemplate from "./InvoicePdfTemplate";
+
 const AllInvoicesTable = (props) => {
+  const handleDownloadPDF = (invoiceData) => {
+    // Create a new instance of jsPDF
+    const pdf = new jsPDF();
+
+    // Use your template component to generate the PDF content
+    const pdfTemplate = <InvoicePdfTemplate {...invoiceData} />;
+
+    const { targetRef } = pdf.instance;
+
+    // Add the template content to the PDF
+    pdf.html(targetRef, { x: 15, y: 15 });
+
+    // Save the PDF with a filename
+    pdf.save(`Invoice_${invoiceData.receiptNo}.pdf`);
+  };
+
   return (
     <table className="w-full border-collapse border border-gray-300">
       <thead>
@@ -48,12 +67,17 @@ const AllInvoicesTable = (props) => {
               {item.billCalculation.delivery}
             </td>
             <td className="border-b p-3 text-center">
-              <button className="mr-3 cursor-not-allowed rounded bg-green-500 px-2 py-1 text-white transition-all hover:bg-green-700">
-                Download
-              </button>
-              <button className="cursor-not-allowed rounded bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700">
-                Delete
-              </button>
+              <div className="buttons flex gap-2">
+                <button
+                  className="rounded bg-sky-500 px-2 py-1 text-white transition-all hover:bg-sky-700"
+                  onClick={() => handleDownloadPDF(item)}
+                >
+                  Download PDF
+                </button>
+                <button className="cursor-not-allowed rounded bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700">
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         ))}
