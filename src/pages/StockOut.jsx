@@ -8,8 +8,8 @@ const StockOut = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-out-products",
-        "http://localhost:3000/products/all-stock-out-products",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-out-products",
+        // "http://localhost:3000/products/all-stock-out-products",
       );
 
       if (!response.ok) {
