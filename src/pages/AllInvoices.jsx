@@ -9,7 +9,7 @@ const AllInvoices = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-invoice",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-invoices",
       );
 
       if (!response.ok) {

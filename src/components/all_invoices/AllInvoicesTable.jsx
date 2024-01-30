@@ -21,7 +21,7 @@ const AllInvoicesTable = (props) => {
 
   return (
     <table className="w-full border-collapse border border-gray-300">
-      <thead>
+      <thead className="sticky left-0 top-[-21px] z-50">
         <tr className="bg-gray-300">
           <th className="w-[180px] border-b border-r p-2">Date</th>
           <th className="w-[180px] border-b border-r p-2">Invoice No</th>
@@ -72,7 +72,7 @@ const AllInvoicesTable = (props) => {
                   className="rounded bg-sky-500 px-2 py-1 text-white transition-all hover:bg-sky-700"
                   onClick={() => handleDownloadPDF(item)}
                 >
-                  Download PDF
+                  Download
                 </button>
                 <button className="cursor-not-allowed rounded bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700">
                   Delete
