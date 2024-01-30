@@ -3,7 +3,7 @@
 const ProductsTable = (props) => {
   return (
     <table className="relative w-full border-collapse border border-gray-300">
-      <thead>
+      <thead className="sticky left-0 top-[-21px] z-50">
         <tr className="bg-gray-300">
           <th className="w-[100px] border-b border-r p-2">ID</th>
           <th className="w-[120px] border-b border-r p-2">Image</th>
