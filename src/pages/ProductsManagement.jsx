@@ -23,8 +23,8 @@ const ProductsManagement = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        // "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-products",
-        "http://localhost:3000/products/all-products",
+        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-products",
+        // "http://localhost:3000/products/all-products",
       );
 
       if (!response.ok) {
