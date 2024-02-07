@@ -75,7 +75,7 @@ const AddNewProductPopup = (props) => {
   };
 
   return (
-    <div className="add-product-overlay fixed left-[50%] top-[50%] h-screen w-screen -translate-x-[50%] -translate-y-[50%] bg-[#00000090]">
+    <div className="add-product-overlay fixed left-[50%] top-[50%] z-50 h-screen w-screen -translate-x-[50%] -translate-y-[50%] bg-[#00000090]">
       <div className="add-product-window absolute left-[50%] top-[50%] h-[80%] w-[70%] -translate-x-[50%] -translate-y-[50%] overflow-y-auto rounded-lg border bg-white">
         <div className="top_row flex items-center justify-between border-b px-5 py-3">
           <div className="left text-2xl font-semibold text-blue-500">

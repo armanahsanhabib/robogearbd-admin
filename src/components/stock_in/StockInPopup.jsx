@@ -10,7 +10,7 @@ const StockInPopup = (props) => {
     const fetchSuggestions = async () => {
       try {
         const response = await fetch(
-          "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-product",
+          "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-products",
         );
         const data = await response.json();
 
@@ -101,7 +101,7 @@ const StockInPopup = (props) => {
   };
 
   return (
-    <div className="add-product-overlay fixed left-[50%] top-[50%] h-screen w-screen -translate-x-[50%] -translate-y-[50%] bg-[#00000090]">
+    <div className="add-product-overlay fixed left-[50%] top-[50%] z-50 h-screen w-screen -translate-x-[50%] -translate-y-[50%] bg-[#00000090]">
       <div className="add-product-window absolute left-[50%] top-[50%] h-max w-[1000px] -translate-x-[50%] -translate-y-[50%] rounded-lg border bg-white">
         {/* Top row */}
         <div className="top_row flex items-center justify-between border-b px-5 py-3">
