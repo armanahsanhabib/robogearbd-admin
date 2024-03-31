@@ -2,106 +2,84 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-const StockInPopup = (props) => {
-  // manage states for product suggestions list
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(true);
+const UpdateStockInPopup = (props) => {
+  const [stockInData, setStockInData] = useState({
+    product_id: "",
+    product_name: "",
+    product_image: "",
+    buying_price: "",
+    selling_price: "",
+    qty: "",
+  });
 
   useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_SERVER_URI}/product/all-products`,
-        );
-        const data = response.data;
+    fetchStockInDetails();
+  }, []);
 
-        const filteredSuggestions = data.filter((product) =>
-          product.product_name
-            .toLowerCase()
-            .includes(props.formData.product_name.toLowerCase()),
-        );
+  const fetchStockInDetails = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URI}/product/stock-in-product-details/${
+          props._id
+        }`,
+      );
 
-        setSuggestions(filteredSuggestions);
-      } catch (error) {
-        console.error("Error fetching suggestions:", error);
-      }
-    };
-
-    if (props.formData.product_name && showSuggestions) {
-      fetchSuggestions();
-    } else {
-      setSuggestions([]);
+      setStockInData(response.data);
+    } catch (error) {
+      console.error("Error fetching product details:", error.message);
     }
-  }, [props.formData.product_name, showSuggestions]);
-
-  // handle suggestion click
-  const handleSelectProduct = (product) => {
-    props.setFormData({
-      product_id: product.product_id,
-      product_name: product.product_name,
-      buying_price: product.buying_price,
-      selling_price: product.selling_price,
-      product_image: product.product_image,
-    });
-
-    // Hide suggestions after selecting a product
-    setShowSuggestions(false);
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    props.setFormData({
-      ...props.formData,
-      [name]: value,
-    });
-
-    if (name === "product_name") {
-      setShowSuggestions(true);
-    }
+    setStockInData({ ...stockInData, [e.target.name]: e.target.value });
   };
 
-  // post product stock in to database
+  // handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URI}/product/stock-in-product`,
-        props.formDataToSend,
+      const response = await axios.put(
+        `https://server.robogearbd.com/product/update-stock-in-product/${stockInData._id}`,
+        stockInData,
       );
 
       if (response.status === 200) {
-        console.log("Stock in product successfully");
-        toast.success("Stock in product successful!", {
+        console.log("Stock-in product updated successfully");
+        toast.success("Stock-in product updated successfully!", {
           position: "bottom-center",
           autoClose: 3000,
         });
-        props.setIsStockInPopupOpen(false);
         props.fetchData();
+        props.setIsUpdatePopupOpen(false);
       } else {
-        console.error("Failed to stock in product", response.statusText);
-        toast.error("Failed to stock in product!", {
+        console.error("Failed to update stock-in product", response.statusText);
+        toast.error("Failed to update stock-in product!", {
           position: "bottom-center",
           autoClose: 3000,
         });
       }
     } catch (error) {
       console.error("Error:", error);
+      toast.error("Failed to update stock-in product!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
     }
   };
 
   return (
-    <div className="add-product-overlay fixed left-[50%] top-[50%] z-50 h-screen w-screen -translate-x-[50%] -translate-y-[50%] bg-[#00000090]">
-      <div className="add-product-window absolute left-[50%] top-[50%] h-max w-[1000px] -translate-x-[50%] -translate-y-[50%] rounded-lg border bg-white">
+    <div className="update-stock-in-overlay fixed left-[50%] top-[50%] z-50 h-screen w-screen -translate-x-[50%] -translate-y-[50%] bg-[#00000090]">
+      <div className="update-stock-in-window absolute left-[50%] top-[50%] h-max w-[1000px] -translate-x-[50%] -translate-y-[50%] rounded-lg border bg-white">
         {/* Top row */}
         <div className="top_row flex items-center justify-between border-b px-5 py-3">
           <div className="left text-2xl font-semibold text-blue-500">
-            Stock In Product
+            Update Stock In Data
           </div>
           <div className="right">
             <button
               className="rounded-lg bg-gray-300 px-5 py-2 font-semibold text-gray-800 hover:bg-rose-600 hover:text-white"
-              onClick={() => props.handleStockInPopup()}
+              onClick={() => props.setIsUpdatePopupOpen(false)}
             >
               Close
             </button>
@@ -115,17 +93,15 @@ const StockInPopup = (props) => {
                 <div className="mb-2 block text-sm font-medium text-gray-600">
                   Product Image
                 </div>
-                {props.formData.product_image ? (
+                {stockInData.product_image ? (
                   <img
-                    src={`${import.meta.env.VITE_SERVER_URI}/product_images/${
-                      props.formData.product_image
-                    }`}
+                    src={`https://server.robogearbd.com/product_images/${stockInData.product_image}`}
                     alt="Product Image"
                     className="mx-auto h-[134px] w-full rounded-lg border bg-gray-50 object-cover"
                   />
                 ) : (
                   <div className="mx-auto flex h-[calc(100%-26px)] items-center justify-center rounded-lg border bg-gray-50 object-cover">
-                    image
+                    No image available
                   </div>
                 )}
               </div>
@@ -140,15 +116,14 @@ const StockInPopup = (props) => {
                   type="number"
                   id="product_id"
                   name="product_id"
-                  value={props.formData.product_id}
-                  onChange={handleChange}
-                  className="w-full rounded-md border px-4 py-2 focus:border-rose-500 focus:outline-none"
-                  required
+                  value={stockInData.product_id}
                   readOnly
+                  className="w-full cursor-not-allowed rounded-md border px-4 py-2 focus:border-rose-500 focus:outline-none"
+                  required
                   placeholder="Enter code"
                 />
               </div>
-              <div className="relative col-span-4">
+              <div className="col-span-4">
                 <label
                   htmlFor="product_name"
                   className="mb-2 block text-sm font-medium text-gray-600"
@@ -159,42 +134,13 @@ const StockInPopup = (props) => {
                   type="text"
                   id="product_name"
                   name="product_name"
-                  value={props.formData.product_name}
+                  value={stockInData.product_name}
                   onChange={handleChange}
-                  className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
+                  className="w-full cursor-not-allowed rounded-md border px-4 py-2 focus:border-rose-500 focus:outline-none"
                   required
-                  autoFocus
+                  readOnly
                   placeholder="Enter Product Name"
                 />
-                {suggestions.length > 0 && (
-                  <ul className="suggestion-list absolute left-0 top-[80px] z-50 max-h-[300px] w-full overflow-y-auto rounded border bg-gray-50 shadow">
-                    {suggestions.map((product) => (
-                      <li
-                        className="flex cursor-pointer gap-3 border-b px-3 py-2 hover:bg-gray-100"
-                        key={product._id}
-                        onClick={() => handleSelectProduct(product)}
-                      >
-                        <div className="left">
-                          <img
-                            src={`${
-                              import.meta.env.VITE_SERVER_URI
-                            }/product_images/${product.product_image}`}
-                            alt={product.product_name}
-                            className="h-[45px]"
-                          />
-                        </div>
-                        <div className="right">
-                          <h3 className="text-blue-600">
-                            {product.product_name}
-                          </h3>
-                          <p className="text-sm font-[300]">
-                            {`Price: ${product.selling_price}`}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
               <div className="col-span-2">
                 <label
@@ -207,7 +153,7 @@ const StockInPopup = (props) => {
                   type="number"
                   id="buying_price"
                   name="buying_price"
-                  value={props.formData.buying_price}
+                  value={stockInData.buying_price}
                   onChange={handleChange}
                   className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                   required
@@ -225,7 +171,7 @@ const StockInPopup = (props) => {
                   type="number"
                   id="selling_price"
                   name="selling_price"
-                  value={props.formData.selling_price}
+                  value={stockInData.selling_price}
                   onChange={handleChange}
                   className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                   required
@@ -243,7 +189,7 @@ const StockInPopup = (props) => {
                   type="number"
                   id="qty"
                   name="qty"
-                  value={props.formData.qty}
+                  value={stockInData.qty}
                   onChange={handleChange}
                   className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                   required
@@ -254,7 +200,7 @@ const StockInPopup = (props) => {
                 <button
                   type="button"
                   className="mr-5 rounded-lg bg-rose-500 px-5 py-2 font-semibold text-white hover:bg-rose-600"
-                  onClick={() => props.handleStockInPopup()}
+                  onClick={() => props.setIsUpdatePopupOpen(false)}
                 >
                   Cancel
                 </button>
@@ -262,7 +208,7 @@ const StockInPopup = (props) => {
                   type="submit"
                   className="rounded-lg bg-green-500 px-8 py-2 font-semibold text-white hover:bg-green-600"
                 >
-                  Confirm
+                  Update
                 </button>
               </div>
             </div>
@@ -273,4 +219,4 @@ const StockInPopup = (props) => {
   );
 };
 
-export default StockInPopup;
+export default UpdateStockInPopup;

@@ -39,8 +39,14 @@ const StockInTable = (props) => {
             </td>
             <td className="border-b border-r p-2">
               <img
-                src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${item.product_image}`}
-                alt={item.product_image}
+                src={`${import.meta.env.VITE_SERVER_URI}/product_images/${
+                  item.product_image
+                }`}
+                alt={item.product_id}
+                onError={(e) => {
+                  e.target.src = "https://placehold.co/250";
+                  e.target.alt = "Placeholder Image";
+                }}
                 className="mx-auto"
                 style={{ width: "auto", height: "50px" }}
               />
@@ -54,12 +60,15 @@ const StockInTable = (props) => {
             </td>
             <td className="border-b border-r p-2 text-center">{item.qty}</td>
             <td className="border-b p-3 text-center">
-              <button className="mr-3 cursor-not-allowed rounded bg-amber-500 px-2 py-1 text-white transition-all hover:bg-amber-700">
+              <button
+                className="mr-3 rounded bg-amber-500 px-2 py-1 text-white transition-all hover:bg-amber-700"
+                onClick={() => props.handleUpdatePopupClick(item._id)}
+              >
                 Edit
               </button>
               <button
-                className="cursor-not-allowed rounded  bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700"
-                // onClick={() => props.handleDelete(item._id)}
+                className="rounded bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700"
+                onClick={() => props.handleDeletePopupClick(item._id)}
               >
                 Delete
               </button>

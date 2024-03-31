@@ -1,11 +1,16 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaFileInvoice } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Header from "../components/Header";
 import AddProductItemForm from "../components/create_invoice/AddProductItemForm";
 import CustomerDetailsForm from "../components/create_invoice/CustomerDetailsForm";
 import GeneratedInvoice from "../components/create_invoice/GeneratedInvoice";
 import SavePdfForm from "../components/create_invoice/SavePdfForm";
 
 const CreateInvoice = () => {
+  const navigate = useNavigate();
   // set invoice no
   const [invoiceNo, setInvoiceNo] = useState(0);
 
@@ -13,10 +18,10 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchInvoiceData = async () => {
       try {
-        const response = await fetch(
-          "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-invoices",
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URI}/order/all-invoices`,
         );
-        const data = await response.json();
+        const data = response.data;
 
         if (data.length > 0) {
           // Find the maximum invoice number
@@ -74,10 +79,23 @@ const CreateInvoice = () => {
 
   // handle invoice item form change
   const handleInvoiceItemFormChange = (e) => {
-    setInvoiceItem({ ...invoiceItem, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let parsedValue = value;
+
+    // Parse the value as a number if it represents a numeric field
+    if (
+      name === "product_id" ||
+      name === "buying_price" ||
+      name === "selling_price" ||
+      name === "qty"
+    ) {
+      parsedValue = parseFloat(value);
+    }
+
+    setInvoiceItem({ ...invoiceItem, [name]: parsedValue });
 
     // Show suggestions when user types in the input field
-    if (e.target.name === "product_name") {
+    if (name === "product_name") {
       setShowSuggestions(true);
     }
   };
@@ -144,10 +162,10 @@ const CreateInvoice = () => {
   useEffect(() => {
     const fetchSuggestions = async () => {
       try {
-        const response = await fetch(
-          "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-products",
+        const response = await axios.get(
+          `${import.meta.env.VITE_SERVER_URI}/product/all-products`,
         );
-        const data = await response.json();
+        const data = response.data;
 
         if (showSuggestions && invoiceItem.product_name) {
           const filteredSuggestions = data.filter((product) =>
@@ -200,10 +218,6 @@ const CreateInvoice = () => {
     });
   };
 
-  // save invoice button click
-  const [message, setMessage] = useState("");
-  const [messageColor, setMessageColor] = useState("bg-white-100");
-
   const saveInvoice = async () => {
     if (
       invoiceNo &&
@@ -219,21 +233,18 @@ const CreateInvoice = () => {
         billCalculation: { ...billCalculation },
       };
 
-      console.log(JSON.stringify(invoiceDataToSave));
-
       try {
-        const response = await fetch(
-          "https://robogear-bd-97bac4d16518.herokuapp.com/products/save-invoice",
+        const response = await axios.post(
+          `${import.meta.env.VITE_SERVER_URI}/order/save-invoice`,
+          invoiceDataToSave,
           {
-            method: "POST",
-            body: JSON.stringify(invoiceDataToSave),
             headers: {
               "Content-Type": "application/json",
             },
           },
         );
 
-        if (response.ok) {
+        if (response.status === 200) {
           console.log("Invoice Saved successfully!");
           setInvoiceNo(invoiceNo + 1);
           setCustomerInfo({
@@ -248,49 +259,49 @@ const CreateInvoice = () => {
             totalPayable: 0,
             delivery: "",
           });
-          setMessageColor("bg-green-200");
-          setMessage("Invoice Saved successfully");
-          setTimeout(() => {
-            setMessage(null);
-          }, 3000);
+          toast.success("Invoice Saved Successfully!", {
+            position: "bottom-center",
+            autoClose: 3000,
+          });
+          navigate("/all-invoices");
         } else {
           console.error("Failed to save invoice!", response.statusText);
-          // setMessage("Failed to add product!");
-          // setTimeout(() => {
-          //   setMessage(null);
-          // }, 3000);
+          toast.error("Failed to save invoice!", {
+            position: "bottom-center",
+            autoClose: 3000,
+          });
         }
       } catch (error) {
         console.error("Error:", error);
-        setMessage("Error: could not save product!");
-        setMessageColor("bg-amber-200");
-        setTimeout(() => {
-          setMessage(null);
-        }, 3000);
+        toast.error("Could not save invoice!", {
+          position: "bottom-center",
+          autoClose: 3000,
+        });
       }
     } else {
       console.log("Fill all data before saving!");
-      setMessage("Fill all data before saving!");
-      setMessageColor("bg-rose-200");
-      setTimeout(() => {
-        setMessage(null);
-      }, 3000);
+      toast.warning("Fill all data before saving!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
     }
   };
 
   return (
-    <div className="relative h-screen overflow-y-auto p-5">
-      <div className="mb-3 flex items-center justify-between border bg-slate-100 p-3">
-        <h3 className="text-3xl font-semibold text-rose-600">Create Invoice</h3>
-        <a
-          href="/all-invoices"
-          className="flex items-center gap-2 rounded bg-green-500 px-5 py-2 text-white hover:bg-green-600"
-        >
-          <FaFileInvoice className="text-xl" /> Show All invoice
-        </a>
-      </div>
+    <div className="relative m-5 w-[calc(100%-300px)] overflow-hidden rounded-lg border bg-white p-3">
+      <Header
+        title="Create Invoice"
+        action={
+          <a
+            href="/all-invoices"
+            className="flex items-center gap-2 rounded bg-orange-500 px-5 py-2 text-white hover:bg-green-600"
+          >
+            <FaFileInvoice className="text-xl" /> Show All invoice
+          </a>
+        }
+      />
       {/* Create Invoice Main container */}
-      <div className="flex justify-between">
+      <main className="flex justify-between p-3">
         {/* Left Content */}
         <div className="left flex w-[700px] flex-col gap-5">
           {/* Customer Details Form */}
@@ -323,14 +334,7 @@ const CreateInvoice = () => {
           billCalculation={billCalculation}
           receiptNo={invoiceNo}
         />
-      </div>
-      {message && (
-        <div
-          className={`message fixed bottom-0 left-[50%] z-50 my-10 -translate-x-[50%] rounded-lg border px-10 py-2 text-sm shadow-lg ${messageColor}`}
-        >
-          {message}
-        </div>
-      )}
+      </main>
     </div>
   );
 };

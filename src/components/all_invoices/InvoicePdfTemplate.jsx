@@ -1,16 +1,18 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
+import React from "react";
 import { FaFacebookSquare, FaGlobe } from "react-icons/fa";
 import LOGO from "../../assets/robogear logo.png";
 import LOGO_TEXT from "../../assets/robogear text logo.png";
 
-const InvoicePdfTemplate = (props) => {
+const InvoicePdfTemplate = React.forwardRef((props, ref) => {
   const date = new Date();
 
   return (
     <div
       id="invoice-pdf"
-      ref={props.targetRef}
-      className="print_area right flex w-[210mm] flex-col gap-3 border px-[50px] py-[60px]"
+      ref={ref}
+      className="print_area flex w-[210mm] flex-col gap-3 bg-white px-[50px] py-[60px]"
     >
       {/* Invoice Header */}
       <div className="invoice_header flex gap-14">
@@ -42,7 +44,7 @@ const InvoicePdfTemplate = (props) => {
                 Name:
               </th>
               <td className="w-[320px] border border-gray-400 px-2 py-1">
-                {props.customerInfo.customer_name}
+                {props.invoiceDetails.customerInfo.customer_name}
               </td>
             </tr>
             <tr>
@@ -50,7 +52,7 @@ const InvoicePdfTemplate = (props) => {
                 Mobile:
               </th>
               <td className="w-[320px] border border-gray-400 px-2">
-                {props.customerInfo.customer_phone}
+                {props.invoiceDetails.customerInfo.customer_phone}
               </td>
             </tr>
             <tr>
@@ -58,7 +60,7 @@ const InvoicePdfTemplate = (props) => {
                 Address:
               </th>
               <td className="w-[320px] border border-gray-400 px-2 py-1">
-                {props.customerInfo.customer_address}
+                {props.invoiceDetails.customerInfo.customer_address}
               </td>
             </tr>
           </tbody>
@@ -68,7 +70,7 @@ const InvoicePdfTemplate = (props) => {
                 Receipt No:
               </th>
               <td className="w-[130px] border border-gray-400 px-2 py-1 text-right">
-                {props.receiptNo}
+                {props.invoiceDetails.receiptNo}
               </td>
             </tr>
             <tr className="">
@@ -115,7 +117,7 @@ const InvoicePdfTemplate = (props) => {
                 TK
               </th>
             </tr>
-            {props.invoiceProducts.map((item, index) => (
+            {props.invoiceDetails.invoiceProducts.map((item, index) => (
               <tr
                 // className={`border-b ${
                 //   index % 2 === 0 ? "even:bg-white" : "odd:bg-slate-50"
@@ -158,7 +160,7 @@ const InvoicePdfTemplate = (props) => {
                 Sub Total =
               </th>
               <td className="border-b-2 border-gray-400 px-2 text-right">
-                {props.billCalculation.subTotal.toFixed(2)}
+                {props.invoiceDetails.billCalculation.subTotal.toFixed(2)}
               </td>
             </tr>
             <tr className="text-[12px]">
@@ -170,7 +172,9 @@ const InvoicePdfTemplate = (props) => {
                 Discount =
               </th>
               <td className="border-b-2 border-gray-400 px-2 text-right">
-                {Number(props.billCalculation.discount).toFixed(2)}
+                {Number(props.invoiceDetails.billCalculation.discount).toFixed(
+                  2,
+                )}
               </td>
             </tr>
             <tr className="text-[12px]">
@@ -182,7 +186,7 @@ const InvoicePdfTemplate = (props) => {
                 Total Payable =
               </th>
               <td className="border-b-2 border-gray-400 px-2 text-right">
-                {props.billCalculation.totalPayable.toFixed(2)}
+                {props.invoiceDetails.billCalculation.totalPayable.toFixed(2)}
               </td>
             </tr>
           </tbody>
@@ -190,6 +194,6 @@ const InvoicePdfTemplate = (props) => {
       </div>
     </div>
   );
-};
+});
 
 export default InvoicePdfTemplate;

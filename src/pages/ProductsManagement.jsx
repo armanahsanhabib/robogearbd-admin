@@ -1,12 +1,17 @@
+import axios from "axios"; // Import axios
 import { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
+import { toast } from "react-toastify";
+import Header from "../components/Header";
 import AddNewProductPopup from "../components/products_management/AddNewProductPopup";
 import DeletePopup from "../components/products_management/DeletePopup";
 import ProductsTable from "../components/products_management/ProductsTable";
+import UpdateProductPopup from "../components/products_management/UpdateProductPopup";
 
 const ProductsManagement = () => {
   const [isProductAddPopupOpen, setIsProductAddPopupOpen] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [isUpdatePopupOpen, setIsUpdatePopupOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const [message, setMessage] = useState(null);
   const [data, setData] = useState([]);
@@ -22,17 +27,11 @@ const ProductsManagement = () => {
   // get all product from database
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-products",
-        // "http://localhost:3000/products/all-products",
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URI}/product/all-products`,
       );
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const result = await response.json();
-      setData(result);
+      setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -45,30 +44,29 @@ const ProductsManagement = () => {
   // delete an item from list
   const handleDelete = async (productId) => {
     try {
-      // Send a DELETE request to the server to delete the product
-      const response = await fetch(
-        // `https://robogear-bd-97bac4d16518.herokuapp.com/products/remove-product/${productId}`,
-        `http://localhost:3000/products/remove-product/${productId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
+      await axios.delete(
+        `${
+          import.meta.env.VITE_SERVER_URI
+        }/product/remove-product/${productId}`,
       );
 
-      if (response.ok) {
-        console.log(`Product with ID ${productId} deleted successfully.`);
-        setIsDeletePopupOpen(false);
-        // Optionally, you can update the UI or fetch the updated product list from the server.
-      } else {
-        console.error(`Failed to delete product with ID ${productId}.`);
-      }
+      console.log(`Product with ID ${productId} deleted successfully.`);
+      toast.success("Product deleted successfully!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
+      setIsDeletePopupOpen(false);
+      fetchData();
     } catch (error) {
-      console.error("Error while deleting product:", error);
+      console.error(`Failed to delete product with ID ${productId}.`);
+      toast.error("Error: couldn't delete product!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
     }
   };
 
+  // handle new product add popup
   const handleProductAddPopup = () => {
     setIsProductAddPopupOpen(!isProductAddPopupOpen);
     setFormData(() => ({
@@ -86,33 +84,34 @@ const ProductsManagement = () => {
     setSelectedProductId(productId);
   };
 
+  const handleUpdatePopupClick = (productId) => {
+    // Logic to open update product popup
+    setIsUpdatePopupOpen(true);
+    setSelectedProductId(productId);
+  };
+
   return (
-    <div className="h-screen overflow-y-auto p-5">
-      <div className="mb-3 flex items-center justify-between border bg-slate-100 p-3">
-        <h3 className="text-3xl font-semibold text-rose-600">
-          Products Management
-        </h3>
-        <button
-          className="flex items-center gap-2 rounded bg-green-500 px-5 py-2 text-white hover:bg-green-600"
-          onClick={() => {
-            handleProductAddPopup();
-          }}
-        >
-          <IoMdAdd className="text-xl" /> Add new Product
-        </button>
-      </div>
-      <ProductsTable
-        data={data}
-        handleDeletePopupClick={handleDeletePopupClick}
+    <div className="m-5 w-[calc(100%-300px)] overflow-hidden rounded-lg border bg-white p-3">
+      <Header
+        title="Products Management"
+        action={
+          <button
+            className="flex items-center gap-2 rounded bg-green-500 px-5 py-2 text-white hover:bg-green-600"
+            onClick={() => {
+              handleProductAddPopup();
+            }}
+          >
+            <IoMdAdd className="text-xl" /> Add new Product
+          </button>
+        }
       />
-      {/* <button className="fixed bottom-0 right-0 m-8 flex h-[64px] w-[64px] items-center justify-center rounded-full bg-blue-600 text-4xl text-white shadow-lg">
-        <IoMdAdd
-          onClick={() => {
-            handleProductAddPopup();
-          }}
-          className="transition-all hover:rotate-90"
+      <main className="h-[calc(100%-65px)] overflow-auto p-3">
+        <ProductsTable
+          data={data}
+          handleDeletePopupClick={handleDeletePopupClick}
+          handleUpdatePopupClick={handleUpdatePopupClick}
         />
-      </button> */}
+      </main>
       {message && (
         <div className="message fixed bottom-0 left-[50%] z-50 my-10 -translate-x-[50%] rounded-lg border bg-green-100 px-10 py-2 text-sm shadow-lg">
           {message}
@@ -131,11 +130,20 @@ const ProductsManagement = () => {
           setFormData={setFormData}
         />
       )}
+      {isUpdatePopupOpen && (
+        <UpdateProductPopup
+          formData={formData}
+          setIsUpdatePopupOpen={setIsUpdatePopupOpen}
+          productId={selectedProductId}
+          fetchData={fetchData}
+        />
+      )}
       {isDeletePopupOpen && (
         <DeletePopup
           handleDelete={handleDelete}
           handleDeletePopupClick={handleDeletePopupClick}
           _id={selectedProductId}
+          data={data}
         />
       )}
     </div>

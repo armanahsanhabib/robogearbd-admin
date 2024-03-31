@@ -1,29 +1,32 @@
-import PROFILE from "../assets/profile.jpg";
+/* eslint-disable react/prop-types */
+import { IoMdNotifications } from "react-icons/io";
+import { MdOutlineMarkEmailUnread } from "react-icons/md";
 
-const Header = () => {
+const Header = (props) => {
   return (
-    <div className="flex items-center justify-between border-b bg-gray-100 p-5">
+    <header className="mb-2 flex items-center justify-between border-b p-3">
       <div className="left">
-        <h3 className="text-2xl font-bold">Overview</h3>
+        <h1 className="text-2xl font-bold text-gray-800">{props.title}</h1>
       </div>
-      <div className="center">center</div>
-      <div className="right">
-        <div className="actions"></div>
-        <div className="profile flex items-center gap-2">
-          <div className="name text-right">
-            <h3 className="text-sm font-semibold">Ahsan Habib</h3>
-            <p className="text-sm">Admin</p>
-          </div>
-          <div className="image">
-            <img
-              src={PROFILE}
-              className="h-[35px] w-[35px] rounded-full ring ring-amber-600"
-              alt="profile pic"
-            />
-          </div>
+      {!props.action ? (
+        <div className="right flex items-center gap-3 text-gray-800">
+          <button
+            type="button"
+            className="notification_bell rounded-full bg-white p-2 text-xl drop-shadow-md"
+          >
+            <IoMdNotifications />
+          </button>
+          <button
+            type="button"
+            className="notification_bell rounded-full bg-white p-2 text-xl drop-shadow-md"
+          >
+            <MdOutlineMarkEmailUnread />
+          </button>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className="">{props.action}</div>
+      )}
+    </header>
   );
 };
 

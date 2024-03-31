@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 const ShareholderCard = (props) => {
   return (
-    <div className="card overflow-hidden rounded-lg border bg-white drop-shadow-lg">
+    <div className="card overflow-hidden rounded-lg border bg-white">
       <div className={`info p-5 text-center ${props.bgColor}`}>
         <img
           src={props.img}

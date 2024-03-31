@@ -1,18 +1,19 @@
 /* eslint-disable react/prop-types */
 
-const AllInvoicesTable = (props) => {
+const CustomersTable = (props) => {
   return (
     <table className="w-full border-collapse border border-gray-300">
       <thead className="sticky left-0 top-[-21px] z-50">
         <tr className="bg-gray-300">
-          <th className="w-[180px] border-b border-r p-2">Date</th>
-          <th className="w-[180px] border-b border-r p-2">Invoice No</th>
+          <th className="w-[100px] border-b border-r p-2">Sl</th>
           <th className="border-b border-r p-2">Customer Name</th>
-          <th className="w-[200px] border-b border-r p-2">Phone</th>
-          <th className="w-[130px] border-b border-r p-2">Subtotal</th>
-          <th className="w-[130px] border-b border-r p-2">Discount</th>
-          <th className="w-[130px] border-b border-r p-2">Paid</th>
-          <th className="w-[130px] border-b border-r p-2">Delivery</th>
+          <th className="border-b border-r p-2">Phone</th>
+          <th className="border-b border-r p-2">Email</th>
+          <th className="w-[350px] border-b border-r p-2">Address</th>
+          <th className="border-b border-r p-2">Total Order</th>
+          <th className="border-b border-r p-2">
+            Pending <br /> Order
+          </th>
           <th className="w-[200px] border-b p-3">Actions</th>
         </tr>
       </thead>
@@ -24,41 +25,32 @@ const AllInvoicesTable = (props) => {
               index % 2 === 0 ? "bg-white" : "bg-gray-50"
             }`}
           >
+            <td className="border-b border-r p-2 text-center">{index + 1}</td>
             <td className="border-b border-r p-2 text-center">
-              {new Date(item.date).toLocaleDateString("en-GB")}
+              {item.fullName}
+            </td>
+            <td className="border-b border-r p-2 text-center">{item.phone}</td>
+            <td className="border-b border-r p-2 text-center">{item.email}</td>
+            <td className="border-b border-r p-2 text-center">
+              {item.address}
             </td>
             <td className="border-b border-r p-2 text-center">
-              {item.receiptNo}
+              {/* {Number(item.totalOrder)?.toFixed(2)} */}
             </td>
             <td className="border-b border-r p-2 text-center">
-              {item.customerInfo.customer_name}
-            </td>
-            <td className="border-b border-r p-2 text-center">
-              {item.customerInfo.customer_phone}
-            </td>
-            <td className="border-b border-r p-2 text-center">
-              {Number(item.billCalculation.subTotal)?.toFixed(2)}
-            </td>
-            <td className="border-b border-r p-2 text-center">
-              {Number(item.billCalculation.discount)?.toFixed(2)}
-            </td>
-            <td className="border-b border-r p-2 text-center">
-              {Number(item.billCalculation.totalPayable)?.toFixed(2)}
-            </td>
-            <td className="border-b border-r p-2 text-center">
-              {item.billCalculation.delivery}
+              {/* {item.pendingOrder} */}
             </td>
             <td className="border-b p-3 text-center">
               <div className="buttons flex justify-center gap-3">
                 <button
                   className="rounded bg-sky-500 px-3 py-1 text-white transition-all hover:bg-sky-700"
-                  onClick={() => props.handleInvoicePopup(item.receiptNo)}
+                  // onClick={() => props.handleInvoicePopup(item.receiptNo)}
                 >
-                  View
+                  Edit
                 </button>
                 <button
                   className="rounded bg-red-500 px-2 py-1 text-white transition-all hover:bg-red-700"
-                  onClick={() => props.handleInvoiceDeletePopup(item.receiptNo)}
+                  // onClick={() => props.handleInvoiceDeletePopup(item.receiptNo)}
                 >
                   Delete
                 </button>
@@ -71,4 +63,4 @@ const AllInvoicesTable = (props) => {
   );
 };
 
-export default AllInvoicesTable;
+export default CustomersTable;

@@ -35,15 +35,25 @@ const StockOutTable = (props) => {
               {new Date(item.date).toLocaleDateString("en-GB")}
             </td>
             <td className="border-b border-r p-2 text-center">
-              {item.invoiceNo}
+              {item.receiptNo}
             </td>
             <td className="border-b border-r p-2 text-center">
               {item.product_id}
             </td>
             <td className="border-b border-r p-2">
               <img
-                src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${item.product_image}`}
-                alt={item.product_image}
+                src={
+                  item.product_image
+                    ? `${import.meta.env.VITE_SERVER_URI}/product_images/${
+                        item.product_image
+                      }`
+                    : "https://placehold.co/250"
+                }
+                alt={item.product_id}
+                onError={(e) => {
+                  e.target.src = "https://placehold.co/250";
+                  e.target.alt = "Placeholder Image";
+                }}
                 className="mx-auto"
                 style={{ width: "auto", height: "50px" }}
               />

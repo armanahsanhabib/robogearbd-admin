@@ -7,7 +7,7 @@ const DeletePopup = (props) => {
       <div className="invoice-details-window absolute left-[50%] top-[50%] w-[90%] max-w-[800px] -translate-x-[50%] -translate-y-[50%] overflow-hidden rounded-lg border bg-white">
         <div className="top_row flex items-center justify-between border-b px-5 py-3">
           <div className="left text-2xl font-semibold text-rose-500">
-            Product Delete Confirmation!
+            Delete Stock In Data Confirmation!
           </div>
           <div className="right">
             <button
@@ -19,7 +19,7 @@ const DeletePopup = (props) => {
           </div>
         </div>
         <div className="body flex flex-col items-center gap-5 overflow-y-auto bg-gray-100 p-5">
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-5 px-3 py-2">
             <div className="top">
               <img
                 src={`${import.meta.env.VITE_SERVER_URI}/product_images/${
@@ -31,19 +31,17 @@ const DeletePopup = (props) => {
             </div>
             <div className="bottom text-center">
               <h3 className="text-xl text-blue-600">{product.product_name}</h3>
-              <p className="text-gray-700">
-                Buying Price: {product.buying_price}; Selling Price:{" "}
-                {product.selling_price}
+              <p>
+                Buying Price: {product.buying_price.toFixed(2)}; Selling Price:{" "}
+                {product.selling_price.toFixed(2)}
               </p>
-              <p className="text-gray-700">
-                Stock in: {product.stock_in}; Stock out: {product.stock_out};
-                Current stock: {product.current_stock}
-              </p>
+              {/* <p>Selling Price: {product.selling_price.toFixed(2)}</p> */}
+              <p>Qty: {product.qty.toFixed(2)}</p>
             </div>
           </div>
           <div className="buttons flex w-full flex-col gap-5 border-t py-3">
             <h3 className="text-center text-xl text-rose-600">
-              Are you really sure to delete this product?
+              Are you really sure to delete the stock-in data?
             </h3>
             <div className="buttons flex items-center justify-center gap-5">
               <button

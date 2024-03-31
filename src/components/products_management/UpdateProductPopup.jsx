@@ -1,67 +1,55 @@
 /* eslint-disable react/prop-types */
-import axios from "axios"; // Import axios
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-const AddNewProductPopup = (props) => {
+const UpdateProductPopup = (props) => {
+  const [productImage, setProductImage] = useState(null);
+  const [productDetails, setProductDetails] = useState({
+    product_id: "",
+    product_name: "",
+    category: "",
+    tags: "",
+    description: "",
+  });
+
   useEffect(() => {
-    // Autofill product_id when component is mounted
-    const maxProductId = Math.max(
-      ...props.data.map((item) => item.product_id),
-      0,
-    );
-    props.setFormData({ ...props.formData, product_id: maxProductId + 1 });
+    fetchProductDetails();
   }, []);
 
-  // handle formdata change
+  const fetchProductDetails = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URI}/product/product-details/${
+          props.productId
+        }`,
+      );
+
+      const fetchedProductDetails = response.data;
+      fetchedProductDetails.tags = fetchedProductDetails.tags.join(", ");
+
+      setProductDetails(response.data);
+    } catch (error) {
+      console.error("Error fetching product details:", error.message);
+    }
+  };
+
   const handleChange = (e) => {
-    props.setFormData({ ...props.formData, [e.target.name]: e.target.value });
+    setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
   };
 
   // handle image change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    props.setFormData({ ...props.formData, product_image: file });
+    setProductDetails({ ...productDetails, product_image: file });
 
     if (file) {
       const reader = new FileReader();
 
       reader.onloadend = () => {
-        props.setProductImage(reader.result);
+        setProductImage(reader.result);
       };
 
       reader.readAsDataURL(file);
-    }
-  };
-
-  // post new product to database
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const formDataObject = new FormData();
-      for (const key in props.formData) {
-        formDataObject.append(key, props.formData[key]);
-      }
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_SERVER_URI}/product/add-new-product`,
-        formDataObject,
-      );
-
-      if (response.status === 200) {
-        toast.success("Product added successfully!", {
-          position: "bottom-center",
-          autoClose: 3000,
-        });
-        props.setIsProductAddPopupOpen(false);
-        props.fetchData();
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Server error: failed to add product!", {
-        position: "bottom-center",
-        autoClose: 3000,
-      });
     }
   };
 
@@ -71,10 +59,33 @@ const AddNewProductPopup = (props) => {
     fileInput.value = null;
 
     // Clear the image state
-    props.setProductImage(null);
+    setProductImage(null);
 
     // Clear the product image from productDetails
-    props.setFormData({ ...props.formData, product_image: null });
+    setProductDetails({ ...productDetails, product_image: null });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.put(
+        `https://server.robogearbd.com/product/update-product/${props.productId}`,
+        productDetails,
+      );
+      props.setIsUpdatePopupOpen(false);
+      props.fetchData();
+      toast.success("Product updated successfully!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
+    } catch (error) {
+      console.error("Error updating product:", error.message);
+      toast.error("Failed to update product!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
+    }
   };
 
   return (
@@ -82,12 +93,12 @@ const AddNewProductPopup = (props) => {
       <div className="add-product-window absolute left-[50%] top-[50%] h-[80%] w-[70%] -translate-x-[50%] -translate-y-[50%] overflow-y-auto rounded-lg border bg-white">
         <div className="top_row flex items-center justify-between border-b px-5 py-3">
           <div className="left text-2xl font-semibold text-blue-500">
-            Add New Product
+            Update Existing Product
           </div>
           <div className="right">
             <button
               className="rounded-lg bg-rose-500 px-5 py-2 font-semibold text-white hover:bg-rose-600"
-              onClick={() => props.handleProductAddPopup()}
+              onClick={() => props.setIsUpdatePopupOpen(false)}
             >
               Close
             </button>
@@ -108,10 +119,11 @@ const AddNewProductPopup = (props) => {
                     type="number"
                     id="product_id"
                     name="product_id"
-                    value={props.formData.product_id}
+                    value={productDetails.product_id}
                     onChange={handleChange}
-                    className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
+                    className="w-full cursor-not-allowed rounded-md border px-4 py-2 focus:border-rose-500 focus:outline-none"
                     required
+                    readOnly
                     placeholder="Enter code"
                   />
                 </div>
@@ -126,7 +138,7 @@ const AddNewProductPopup = (props) => {
                     type="text"
                     id="product_name"
                     name="product_name"
-                    value={props.formData.product_name}
+                    value={productDetails.product_name}
                     onChange={handleChange}
                     className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                     required
@@ -145,7 +157,7 @@ const AddNewProductPopup = (props) => {
                     type="text"
                     id="category"
                     name="category"
-                    value={props.formData.category}
+                    value={productDetails.category}
                     onChange={handleChange}
                     className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                     required
@@ -180,10 +192,10 @@ const AddNewProductPopup = (props) => {
                     type="text"
                     id="tags"
                     name="tags"
-                    value={props.formData.tags}
+                    value={productDetails.tags}
                     onChange={handleChange}
                     className="w-full rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
-                    placeholder="type your tags seperated with comma (eg. arduino, sensor, motor)"
+                    placeholder="type your tags separated with comma (eg. arduino, sensor, motor)"
                   />
                 </div>
                 <div className="col-span-5">
@@ -197,7 +209,7 @@ const AddNewProductPopup = (props) => {
                     type="text"
                     id="description"
                     name="description"
-                    value={props.formData.description}
+                    value={productDetails.description}
                     onChange={handleChange}
                     className="h-[350px] w-full resize-none rounded-md border px-4 py-2 focus:border-blue-500 focus:outline-none"
                     placeholder="product description here..."
@@ -208,12 +220,12 @@ const AddNewProductPopup = (props) => {
                     type="submit"
                     className="mx-auto block rounded-lg bg-green-500 px-8 py-2 font-semibold text-white hover:bg-green-600"
                   >
-                    Add Product
+                    Update Product
                   </button>
                 </div>
               </div>
               <div className="right col-span-1">
-                <div className="product_image">
+                {/* <div className="product_image">
                   <h3 className="mb-3 text-lg font-medium text-gray-600">
                     Click below to add image
                   </h3>
@@ -221,18 +233,18 @@ const AddNewProductPopup = (props) => {
                     htmlFor="product_image"
                     className="mb-2 block h-[400px] w-[400px] cursor-pointer"
                   >
-                    {props.productImage ? (
+                    {productImage ? (
                       <img
-                        src={props.productImage}
+                        src={productImage}
                         alt="Product"
                         className="h-full w-full rounded-lg border object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center rounded-lg border-2 border-dashed bg-gray-100 object-cover">
-                        <div className="rounded border border-blue-500 px-5 py-2 text-blue-600">
-                          Click to add Image
-                        </div>
-                      </div>
+                      <img
+                        src={`https://server.robogearbd.com/product_images/${productDetails.product_image}`}
+                        alt="Product"
+                        className="h-full w-full rounded-lg border object-cover"
+                      />
                     )}
                   </label>
                   <input
@@ -240,11 +252,26 @@ const AddNewProductPopup = (props) => {
                     name="product_image"
                     id="product_image"
                     accept="image/*"
+                    readOnly
                     onChange={handleImageChange}
-                    required
                   />
+                </div> */}
+                <div className="product_image">
+                  <h3 className="mb-3 text-lg font-medium text-gray-600">
+                    Product Image
+                  </h3>
+                  <div
+                    htmlFor="product_image"
+                    className="mb-2 block h-[400px] w-[400px]"
+                  >
+                    <img
+                      src={`https://server.robogearbd.com/product_images/${productDetails.product_image}`}
+                      alt="Product"
+                      className="h-full w-full rounded-lg border object-cover"
+                    />
+                  </div>
                 </div>
-                {props.productImage && (
+                {productImage && (
                   <div
                     className="mx-auto mt-5 w-max cursor-pointer rounded bg-rose-500 px-5 py-2 text-sm text-white hover:bg-rose-600"
                     onClick={() => handleImageRemove()}
@@ -261,4 +288,4 @@ const AddNewProductPopup = (props) => {
   );
 };
 
-export default AddNewProductPopup;
+export default UpdateProductPopup;

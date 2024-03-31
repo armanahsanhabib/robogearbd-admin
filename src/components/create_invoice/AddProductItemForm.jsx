@@ -46,7 +46,9 @@ const AddProductItemForm = (props) => {
               >
                 <div className="left">
                   <img
-                    src={`https://robogear-bd-97bac4d16518.herokuapp.com/product_images/${product.product_image}`}
+                    src={`${import.meta.env.VITE_SERVER_URI}/product_images/${
+                      product.product_image
+                    }`}
                     alt={product.product_name}
                     className="h-[45px]"
                   />
@@ -60,7 +62,7 @@ const AddProductItemForm = (props) => {
               </li>
             ))}
             <button
-              className="absolute right-0 top-0 z-50 rounded bg-rose-600 px-5 py-2 text-white hover:bg-rose-800"
+              className="absolute right-2 top-2 z-50 rounded bg-rose-600 px-3 py-1 text-sm text-white hover:bg-rose-800"
               onClick={() => props.handleSuggestionCloseButton()}
               type="button"
             >

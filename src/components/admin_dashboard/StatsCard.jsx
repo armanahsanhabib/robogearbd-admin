@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 const StatsCard = (props) => {
   return (
-    <div className="card flex items-center overflow-hidden rounded-lg border bg-white drop-shadow-lg">
+    <div className="card flex items-center overflow-hidden rounded-lg border bg-white">
       <div
         className={`icon flex h-full flex-col items-center justify-center px-5 ${props.iconBg} text-5xl ${props.txtColor}`}
       >

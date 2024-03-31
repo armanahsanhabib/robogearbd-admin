@@ -1,12 +1,19 @@
+import axios from "axios"; // Import axios
 import { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
+import { toast } from "react-toastify";
+import Header from "../components/Header";
+import DeletePopup from "../components/stock_in/DeletePopup";
 import StockInPopup from "../components/stock_in/StockInPopup";
 import StockInTable from "../components/stock_in/StockInTable";
+import UpdateStockInPopup from "../components/stock_in/UpdateStockInPopup";
 
 const StockIn = () => {
-  const [message, setMessage] = useState(null);
   const [data, setData] = useState([]);
   const [isStockInPopupOpen, setIsStockInPopupOpen] = useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [isUpdatePopupOpen, setIsUpdatePopupOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState("");
 
   const [formData, setFormData] = useState({
     product_id: "",
@@ -29,17 +36,20 @@ const StockIn = () => {
   // get all stock in product list from database
   const fetchData = async () => {
     try {
-      const response = await fetch(
-        "https://robogear-bd-97bac4d16518.herokuapp.com/products/all-stock-in-products",
-        // "http://localhost:3000/products/all-stock-in-products",
+      const response = await axios.get(
+        `${import.meta.env.VITE_SERVER_URI}/product/all-stock-in-products`,
       );
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      // Check if the response is successful
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch data");
       }
 
-      const result = await response.json();
-      setData(result);
+      // Reverse the order of data
+      const reversedData = response.data.reverse();
+
+      // Set the reversed data
+      setData(reversedData);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -61,45 +71,87 @@ const StockIn = () => {
     });
   };
 
+  // delete an item from list
+  const handleDelete = async (productId) => {
+    try {
+      await axios.delete(
+        `${
+          import.meta.env.VITE_SERVER_URI
+        }/product/remove-stock-in-product/${productId}`,
+      );
+
+      console.log(`Stock-in data with ID ${productId} deleted successfully.`);
+      toast.success("Stock in data deleted successfully!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
+      setIsDeletePopupOpen(false);
+      fetchData();
+    } catch (error) {
+      console.error(`Failed to delete Stock-in data with ID ${productId}.`);
+      toast.error("Error: couldn't delete stock in data!", {
+        position: "bottom-center",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  const handleDeletePopupClick = (productId) => {
+    setIsDeletePopupOpen(!isDeletePopupOpen);
+    setSelectedProductId(productId);
+  };
+
+  const handleUpdatePopupClick = (productId) => {
+    setSelectedProductId(productId);
+    setIsUpdatePopupOpen(!isUpdatePopupOpen);
+  };
+
   return (
-    <div className="relative h-screen overflow-y-auto p-5">
-      <div className="mb-3 flex items-center justify-between border bg-slate-100 p-3">
-        <h3 className="text-3xl font-semibold text-rose-600">
-          Stock in Products
-        </h3>
-        <button
-          className="flex items-center gap-2 rounded bg-green-500 px-5 py-2 text-white hover:bg-green-600"
-          onClick={() => {
-            handleStockInPopup();
-          }}
-        >
-          <IoMdAdd className="text-xl" /> Stock in
-        </button>
-      </div>
-      <StockInTable data={data} />
-      {/* <button className="fixed bottom-0 right-0 m-8 flex h-[64px] w-[64px] items-center justify-center rounded-full bg-blue-600 text-4xl text-white shadow-lg">
-        <IoMdAdd
-          onClick={() => {
-            handleStockInPopup();
-          }}
-          className="transition-all hover:rotate-90"
+    <div className="relative m-5 w-[calc(100%-300px)] overflow-hidden rounded-lg border bg-white p-3">
+      <Header
+        title="Stock in Products"
+        action={
+          <button
+            className="flex items-center gap-2 rounded bg-green-500 px-5 py-2 text-white hover:bg-green-600"
+            onClick={() => {
+              handleStockInPopup();
+            }}
+          >
+            <IoMdAdd className="text-xl" /> Stock in
+          </button>
+        }
+      />
+      <main className="h-[calc(100%-65px)] overflow-auto p-3">
+        <StockInTable
+          data={data}
+          handleDeletePopupClick={handleDeletePopupClick}
+          handleUpdatePopupClick={handleUpdatePopupClick}
         />
-      </button> */}
+      </main>
       {isStockInPopupOpen && (
         <StockInPopup
           handleStockInPopup={handleStockInPopup}
           formData={formData}
           setFormData={setFormData}
-          setMessage={setMessage}
           setIsStockInPopupOpen={setIsStockInPopupOpen}
           fetchData={fetchData}
           formDataToSend={formDataToSend}
         />
       )}
-      {message && (
-        <div className="message fixed bottom-0 left-[50%] z-50 my-10 -translate-x-[50%] rounded-lg border bg-green-100 px-10 py-2 text-sm shadow-lg">
-          {message}
-        </div>
+      {isDeletePopupOpen && (
+        <DeletePopup
+          handleDelete={handleDelete}
+          handleDeletePopupClick={handleDeletePopupClick}
+          _id={selectedProductId}
+          data={data}
+        />
+      )}
+      {isUpdatePopupOpen && (
+        <UpdateStockInPopup
+          setIsUpdatePopupOpen={setIsUpdatePopupOpen}
+          _id={selectedProductId}
+          fetchData={fetchData}
+        />
       )}
     </div>
   );
