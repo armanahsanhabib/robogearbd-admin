@@ -40,7 +40,9 @@ const UpdateStockInPopup = (props) => {
 
     try {
       const response = await axios.put(
-        `https://server.robogearbd.com/product/update-stock-in-product/${stockInData._id}`,
+        `${import.meta.env.VITE_SERVER_URI}/product/update-stock-in-product/${
+          stockInData._id
+        }`,
         stockInData,
       );
 
@@ -95,7 +97,9 @@ const UpdateStockInPopup = (props) => {
                 </div>
                 {stockInData.product_image ? (
                   <img
-                    src={`https://server.robogearbd.com/product_images/${stockInData.product_image}`}
+                    src={`${import.meta.env.VITE_SERVER_URI}/product_images/${
+                      stockInData.product_image
+                    }`}
                     alt="Product Image"
                     className="mx-auto h-[134px] w-full rounded-lg border bg-gray-50 object-cover"
                   />

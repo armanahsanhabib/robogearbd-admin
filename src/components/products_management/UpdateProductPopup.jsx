@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -37,22 +38,6 @@ const UpdateProductPopup = (props) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
   };
 
-  // handle image change
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setProductDetails({ ...productDetails, product_image: file });
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setProductImage(reader.result);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleImageRemove = () => {
     // Clear the file input field
     const fileInput = document.getElementById("product_image");
@@ -70,7 +55,9 @@ const UpdateProductPopup = (props) => {
 
     try {
       await axios.put(
-        `https://server.robogearbd.com/product/update-product/${props.productId}`,
+        `${import.meta.env.VITE_SERVER_URI}/product/update-product/${
+          props.productId
+        }`,
         productDetails,
       );
       props.setIsUpdatePopupOpen(false);
@@ -225,37 +212,6 @@ const UpdateProductPopup = (props) => {
                 </div>
               </div>
               <div className="right col-span-1">
-                {/* <div className="product_image">
-                  <h3 className="mb-3 text-lg font-medium text-gray-600">
-                    Click below to add image
-                  </h3>
-                  <label
-                    htmlFor="product_image"
-                    className="mb-2 block h-[400px] w-[400px] cursor-pointer"
-                  >
-                    {productImage ? (
-                      <img
-                        src={productImage}
-                        alt="Product"
-                        className="h-full w-full rounded-lg border object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={`https://server.robogearbd.com/product_images/${productDetails.product_image}`}
-                        alt="Product"
-                        className="h-full w-full rounded-lg border object-cover"
-                      />
-                    )}
-                  </label>
-                  <input
-                    type="file"
-                    name="product_image"
-                    id="product_image"
-                    accept="image/*"
-                    readOnly
-                    onChange={handleImageChange}
-                  />
-                </div> */}
                 <div className="product_image">
                   <h3 className="mb-3 text-lg font-medium text-gray-600">
                     Product Image
@@ -265,7 +221,9 @@ const UpdateProductPopup = (props) => {
                     className="mb-2 block h-[400px] w-[400px]"
                   >
                     <img
-                      src={`https://server.robogearbd.com/product_images/${productDetails.product_image}`}
+                      src={`${import.meta.env.VITE_SERVER_URI}/product_images/${
+                        productDetails.product_image
+                      }`}
                       alt="Product"
                       className="h-full w-full rounded-lg border object-cover"
                     />
